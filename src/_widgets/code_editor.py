@@ -8,11 +8,11 @@ from PyQt4 import (
     QtCore as _QtCore,
 )
 
-from python_scripter._widgets.ui import code_editor as _code_editor
+from python_scripter._widgets.ui import code_editor_ui as _code_editor_ui
 from python_scripter._core import interpreter as _interpreter
 
 
-class CodeEditor(_QtGui.QDialog, _code_editor.Ui_CodeEditor):
+class CodeEditor(_QtGui.QDialog, _code_editor_ui.Ui_CodeEditor):
     def __init__(self, parent=None):
         super(CodeEditor, self).__init__(parent=parent)
 

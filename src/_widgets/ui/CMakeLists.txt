@@ -1,3 +1,4 @@
 install_qt_files(
-    FILES code_editor.ui
+    REL_INSTALL_DIR "_widgets/ui/"
+    FILES code_editor_ui.ui
 )

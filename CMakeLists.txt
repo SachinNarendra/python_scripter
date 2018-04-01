@@ -11,4 +11,7 @@ message("Project Version        : ${PROJECT_VERSION}\n")
 
 
 add_subdirectory(src)
+
+add_subdirectory(src/_widgets/ui)
+
 add_subdirectory(scripts)
