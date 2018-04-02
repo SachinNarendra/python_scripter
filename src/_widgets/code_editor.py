@@ -1,3 +1,4 @@
+import keyword as _keyword
 import re as _re
 import sys as _sys
 
@@ -70,19 +71,32 @@ class CodeEditor(_QtGui.QDialog, _code_editor_ui.Ui_CodeEditor):
 
         code = self._get_code_to_execute()
 
+        input_text = code
+        if self._is_variable(code.strip()):
+            # code = "import pprint; pprint.pprint(%s)" % code
+            code = "print %s" % code
+            input_text = ""
+
         self._interpreter.execute_script(code)
 
-        output_list = [
-            code,
-            "Result :",
-            string_io.getvalue(),
-            "",
-        ]
+        self._update_output_log(input_text, string_io.getvalue())
 
         _sys.stdout = _sys.__stdout__
         _sys.stderr = _sys.__stderr__
 
-        self.text_edit_output.insertPlainText('\n'.join(output_list))
+    def _update_output_log(self, code, output):
+
+        output_list = [
+            code,
+            "Result :",
+            output,
+            "",
+        ]
+
+        output_text = self.text_edit_output.toPlainText() + '\n'.join(output_list)
+        self.text_edit_output.setPlainText(output_text)
+        scroll_bar = self.text_edit_output.verticalScrollBar()
+        scroll_bar.setValue(scroll_bar.maximum())
 
     def _get_code_to_execute(self):
 
@@ -100,15 +114,22 @@ class CodeEditor(_QtGui.QDialog, _code_editor_ui.Ui_CodeEditor):
             code_lines[index] = code_line.rstrip()
         code = '\n'.join(code_lines)
 
-        if self._is_variable(code.strip()):
-            code = "import pprint; pprint.pprint(%s)" % code
-
         return code
 
     @staticmethod
     def _is_variable(code):
+
+        for key_word in _keyword.kwlist:
+            if code.startswith(key_word):
+                return False
+
+        if " = " in code:
+            return False
+
         pattern_list = [
+            # "[^\n:]",
             "^[a-zA-Z0-9_.]+$",  # objects
+            "^[a-zA-Z0-9_.]+(.*\n*)$",  # functions
             "^dir\([a-zA-Z0-9_.]+\)$",
         ]
 
